@@ -1,4 +1,4 @@
-# WebSimplify (Free & Open Source)
+# WebSimplify (Not publishable yet)
 
 **WebSimplify** is a free, lightweight C++ framework for building **modern Windows applications** without touching the Win32 API.
 
@@ -11,11 +11,10 @@ Perfect for modern desktop apps, tools, and JavaScript-powered experiences such 
 
 - No Win32 boilerplate — focus on features, not Windows internals
 - Modern Fluent-style UI out of the box
-- Real Chromium rendering (HTML / CSS / JS)
+- Chromium rendering (HTML / CSS / JS)
 - Fully customizable CSS and layout
 - Secure by default
-- Lightweight and fast
-- Completely free to use
+- Lightweight and powerfull
 
 ---
 
@@ -146,5 +145,106 @@ WebSimplify::setCSS("body { background: black; }");
 WebSimplify::appendCSS(".btn { color: red; }");
 WebSimplify::clearCSS();
 ```
-Soon to come other options
+##### CSS Styling
+```cpp
+WebSimplify::setCSS("body { background: black; }");
+WebSimplify::appendCSS(".btn { color: red; }");
+WebSimplify::clearCSS(); // this clears all css, and no new css works, use WebSimplify::css:restart(); to restart the css engine
+```
+##### Optimised UI Components
+Buttons
+```cpp
+WebSimplify::addButton("Label", "Label", callback);
+WebSimplify::removeButton("Label");
+WebSimplify::enableButton("Label", newcallback); // replaces the original onclick
+```
+Dropdowns
+```cpp
+WebSimplify::addDropdown("menu", {
+    "Option 1",
+    "Option 2",
+    "Option 3"
+});
 
+WebSimplify::onDropdownChange("menu", callback);
+```
+### Input Fields
+
+WebSimplify provides **native-managed input components** that stay fully synced with the web layer.
+
+Inputs are identified by a unique name and can be styled using custom CSS.
+
+#### Create an Input
+
+```cpp
+WebSimplify::addInput({
+    .id = "username",
+    .placeholder = "Enter username",
+    .type = WebSimplify::InputType::Text
+});
+
+// Supported Input Types
+WebSimplify::InputType::Text
+WebSimplify::InputType::Password
+WebSimplify::InputType::Email
+WebSimplify::InputType::Number
+WebSimplify::InputType::Search
+```
+Get & Set Values compatible to c++ 
+
+```cpp
+std::string value = WebSimplify::getInputValue("username");
+WebSimplify::setInputValue("username", value);
+```
+
+Input State Control
+```cpp
+WebSimplify::enableInput("username", true);
+WebSimplify::focusInput("username");
+WebSimplify::clearInput("username");
+```
+Input Events
+```cpp
+WebSimplify::onInputChange("username", [](std::string value) {
+    // Called on every value change
+});
+WebSimplify::onInputSubmit("username", [](std::string value) {
+    // Called when user presses Enter, it's not a form only enter of keyboard
+});
+```
+Remove Input (do not recall this input before a init or app will crash)
+```cpp
+WebSimplify::removeInput("username");
+```
+
+Styling Inputs with CSS
+```cpp
+WebSimplify::appendCSS(R"(
+    input { // or #username for the example above
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #333;
+        background: #111;
+        color: white;
+    }
+
+    input:focus {
+        border-color: #6c47ff;
+        outline: none;
+    }
+)");
+```
+### Notes
+Inputs are native-managed and web-rendered inputs may be slow:
+    - Do not call: `<input id="username" />`
+    - Call it: `WebSimplify::addInput({
+                    .id = "username",
+                    .placeholder = "Enter username",
+                    .type = WebSimplify::InputType::Text
+                });`
+
+Values stay synchronized between C++ and JavaScript
+
+Input lifecycle is controlled via addInput() and removeInput()
+
+Use destroy() on components to stop listeners and free resource
