@@ -75,16 +75,20 @@ WebSimplify::init({
     height: 600,
     minWidth: 400,
     minHeight: 300,
-    theme: WebSimplify::Theme::Dark,
+    theme: WebSimplify::Theme::System,
+    logs: true, // save user changes on app start
     resizable: true,
     frameless: true,
-    centered: true
+    position: 5 // 5 is middle-middle, 1 b-l, 2 b-m, 3 b-r,
 });
 ```
 
+
+```cpp
 WebSimplify::run();      // Start event loop
 WebSimplify::close();    // Close application
 WebSimplify::restart(); // Restart app
+```
 
 ##### Window controls
 
@@ -110,10 +114,37 @@ WebSimplify::setAlwaysOnTop(bool);
 WebSimplify::setTheme(WebSimplify::Theme::Light);
 WebSimplify::setTheme(WebSimplify::Theme::Dark);
 WebSimplify::toggleTheme();
+```
 
-
+##### Also Theme & Appearance but not fully optimised
+```cpp
 WebSimplify::setAccentColor("#6c47ff");
 WebSimplify::enableBlur(bool);
 WebSimplify::setCornerRadius(int);
+```
+
+##### Web Content Rendering
+```cpp
+WebSimplify::setHTML("<html>...</html>");
+WebSimplify::setBody("<div>...</div>");
+WebSimplify::load("https://example.com");
+WebSimplify::reload();
+
+
+WebSimplify::executeJS("console.log('Hello')");
 
 ```
+Do not call load method more than once in a loop, it will crash 
+```cpp
+WebSimplify::injectScript("C://User/script.js");
+```
+
+##### Web Content CSS Styling
+The css is rendered first in cache so if content is <p style="color: red">j</p> and in back it's p {color:blue} the final color will be still red!
+```cpp
+WebSimplify::setCSS("body { background: black; }");
+WebSimplify::appendCSS(".btn { color: red; }");
+WebSimplify::clearCSS();
+```
+Soon to come other options
+
